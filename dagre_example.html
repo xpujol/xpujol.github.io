@@ -1,0 +1,86 @@
+
+<!doctype html>
+
+<meta charset="utf-8">
+<title>Dagre D3 Example</title>
+
+<link rel="stylesheet" href="https://dagrejs.github.io/project/dagre-d3/latest/demo/demo.css">
+<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<script src="https://dagrejs.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
+
+<h1>Dagre D3 Example</h1>
+
+<style id="css">
+/* This sets the color for "TK" nodes to a light blue green. */
+g.type-TK > rect {
+  fill: #00ffd0;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #999;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+</style>
+
+<svg id="svg-canvas" width=960 height=600></svg>
+
+<section>
+<p>An example of visualizing the tokenization of a sentence. This example shows
+how CSS classes can be applied to a rendered graph.
+</section>
+
+<script id="js">
+// Create the input graph
+var g = new dagreD3.graphlib.Graph()
+  .setGraph({})
+  .setDefaultEdgeLabel(function() { return {}; });
+
+// Here we"re setting nodeclass, which is used by our custom drawNodes function
+// below.
+g.setNode("n3.1", { label: "Success" });
+g.setNode("n3.14", { label: "Top" });
+g.setNode("n4.1", { label: "Success" });
+g.setNode("n1.12", { label: "Home" });
+g.setNode("n2.13", { label: "TheProject" });
+
+g.nodes().forEach(function(v) {
+  var node = g.node(v);
+  // Round the corners of the nodes
+  node.rx = node.ry = 5;
+});
+
+// Set up edges, no special attributes.
+g.setEdge("n1.12", "n2.13");
+g.setEdge("n2.13", "n3.1");
+g.setEdge("n2.13", "n3.14");
+g.setEdge("n3.14", "n4.1");
+
+// Create the renderer
+var render = new dagreD3.render();
+
+// Set up an SVG group so that we can translate the final graph.
+var svg = d3.select("svg"),
+    svgGroup = svg.append("g");
+
+// Run the renderer. This is what draws the final graph.
+render(d3.select("svg g"), g);
+
+// Center the graph
+var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
+svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
+svg.attr("height", g.graph().height + 40);
+</script>
+
+<script src="https://dagrejs.github.io/project/dagre-d3/latest/demo/demo.js"></script>
